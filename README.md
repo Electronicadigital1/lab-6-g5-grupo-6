@@ -101,6 +101,11 @@ Esta ruta se utiliza cuando el sistema actúa como un monitor en tiempo real. En
 
 ## Conclusiones
 
+1. La FSM como eje de sincronización: La implementación de una Máquina de Estados Finitos (FSM) combinada con una base de tiempos ralentizada (`clk_16ms`) demostró ser indispensable para adaptar la alta velocidad de la FPGA (50 MHz) a los estrictos y lentos tiempos de respuesta que exige el hardware de la pantalla LCD 16x2.
+2. Eficiencia mediante la reutilización de código: El diseño de la arquitectura destaca por su modularidad, comprobando que no es necesario diseñar un sistema desde cero para mostrar datos dinámicos. La versión dinámica reutiliza el 100% de la lógica de inicialización y escritura de etiquetas del módulo estático, optimizando así el uso de recursos lógicos de la FPGA.
+3. Traducción directa de lógica a hardware: El análisis del "evaluador" (la condición de salida `data_counter == 16`) evidencia cómo las instrucciones de control de alto nivel en Verilog se materializan directamente en componentes físicos específicos, tales como registros para el conteo, comparadores lógicos para la evaluación y multiplexores para el enrutamiento de estados.
+4. Actualización dinámica sin parpadeos: Se concluye que la forma más eficiente de mostrar variables en tiempo real en una LCD no es borrando y reescribiendo toda la pantalla, sino mediante el uso estratégico del modo comando para mover el puntero de la memoria DDRAM hacia coordenadas específicas, logrando sobreescribir únicamente los datos numéricos y preservando el texto estático.
+
 
 ## Referencias
-
+[1] Electronicadigital1, "Lab_6," Repositorio del curso 2026-1, GitHub, 2026. [En línea]. Disponible en: https://github.com/Electronicadigital1/2026-1/tree/main/Labs/Lab_6.
