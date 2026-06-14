@@ -37,7 +37,7 @@ T = COUNT_MAX / f_clk
 T = 800,000 / 50,000,000 Hz
 T = 0.016 s = 16 ms
 
-2. Inicialización por Comandos (CONFIG_CMD1): Al recibir la señal de inicio (ready_i), el módulo pone la señal RS en bajo (RS = 0) para indicarle a la LCD que recibirá órdenes de configuración y no texto. Envía secuencialmente 4 comandos predefinidos (como configurar el bus a 8 bits, encender la pantalla, activar el cursor y limpiar la pantalla). En este estado, la FSM prepara la pantalla LCD para poder recibir caracteres. Para indicarle al hardware de la LCD que lo que se va a transmitir es una orden de configuración y no texto, la FSM asigna de manera estricta la señal de registro de selección en bajo (rs <= 1'b0). Simultáneamente, el bus de datos toma el valor guardado en una memoria ROM de configuración interna indexada por el contador: data <= config_mem[command_counter]. En cada ciclo del reloj de 16 ms, el sistema transmite uno de los 4 comandos esenciales:
+2. Inicialización por Comandos: Al recibir la señal de inicio (ready_i), el módulo pone la señal RS en bajo (RS = 0) para indicarle a la LCD que recibirá órdenes de configuración y no texto. En este estado, la FSM prepara la pantalla LCD para poder recibir caracteres. Para indicarle al hardware de la LCD que lo que se va a transmitir es una orden de configuración y no texto, la FSM asigna la señal de registro de selección en bajo (rs <= 1'b0). Simultáneamente, el bus de datos toma el valor guardado en una memoria ROM de configuración interna por el contador: data <= config_mem[command_counter]. En cada ciclo del reloj de 16 ms, el sistema transmite uno de los 4 comandos esenciales:
 
 | Comando | Valor Hexadecimal | Descripción |
 | :--- | :---: | :--- |
@@ -46,6 +46,17 @@ T = 0.016 s = 16 ms
 | **Control de encendido** | `8'h0c` | Enciende la pantalla y desactiva el parpadeo del cursor. |
 | **Limpieza de pantalla** | `8'h01` | Borra cualquier residuo en la memoria de la LCD. |
 
+3. Escritura de la primera fila: Una vez configurada la pantalla, la FSM cambia la señal de control a alto (RS = 1), pasando a "Modo Datos". En este estado, un contador recorre los primeros 16 bytes de una memoria local (static_data_mem) donde se guardó el texto, y envía los códigos ASCII de las letras uno a uno para rellenar la fila superior de la LCD. Cada letra se plasma en la pantalla de izquierda a derecha. En cada flanco de reloj, el contador incrementa en uno (data_counter <= data_counter + 1). La máquina de estados repite este proceso de forma iterativa data_counter < 16 (NUM_DATA_PERLINE). Una vez se completa la transferencia del carácter número 16 (llenando la fila superior), la FSM transiciona hacia CONFIG_CMD2.
+
+En estos estados, la Máquina de Estados (FSM) se encarga de leer los caracteres de la memoria interna y enviarlos a la pantalla LCD. Su comportamiento se define por las siguientes variables:
+
+| Señal / Variable | Tipo | Descripción y Comportamiento en el Estado |
+| :--- | :---: | :--- |
+| **`static_data_mem`** | Entrada (Dato interno) | Memoria ROM interna de la cual se lee el código ASCII del carácter correspondiente que se va a imprimir. |
+| **`data_counter`** | Entrada (Condición) | El estado evalúa su valor actual para saber qué posición de la memoria leer y determinar si ya se alcanzó el límite de la fila (`data_counter == 16`). |
+| **`rs` (Register Select)** | Salida (Señal de Control) | Se asigna obligatoriamente a `1'b1` (Nivel Alto) para indicarle a la LCD que la información enviada es texto y no un comando. |
+| **`data [7:0]`** | Salida (Bus de Datos) | Se le asigna el byte exacto del carácter extraído de la memoria (`static_data_mem[data_counter]`) para enviarlo físicamente a los pines de la pantalla. |
+| **`data_counter`** | Salida (Actualización) | Se incrementa su valor en 1 (`data_counter <= data_counter + 1`) para que en el siguiente ciclo de reloj se apunte a la siguiente letra. |
 
 ### Diagramas
 
