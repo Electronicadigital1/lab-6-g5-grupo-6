@@ -58,6 +58,16 @@ En estos estados, la Máquina de Estados (FSM) se encarga de leer los caracteres
 | **`data [7:0]`** | Salida (Bus de Datos) | Se le asigna el byte exacto del carácter extraído de la memoria (`static_data_mem[data_counter]`) para enviarlo físicamente a los pines de la pantalla. |
 | **`data_counter`** | Salida (Actualización) | Se incrementa su valor en 1 (`data_counter <= data_counter + 1`) para que en el siguiente ciclo de reloj se apunte a la siguiente letra. |
 
+4. Salto de Línea Interno: Físicamente, las pantallas LCD 16x2 no saltan de fila de forma automática al llenarse la primera; requieren recibir una instrucción de control que mueva el puntero de su memoria interna DDRAM. Al entrar en este estado, el hardware realiza tres operaciones inmediatas:
+   
+| Operación | Código Verilog | Propósito |
+| :--- | :---: | :--- |
+| **Limpieza del contador** | `data_counter <= 'b0;` | Reinicia el contador a cero para prepararlo y sincronizarlo con el inicio de la escritura de la siguiente línea. |
+| **Cambio a modo comando** | `rs <= 1'b0;` | Regresa la línea de selección de registro a bajo, indicándole a la LCD que recibirá una instrucción de control y no un carácter de texto. |
+| **Instrucción de salto** | `data <= 8'hc0;` | Deposita en el bus el comando `START_2LINE`, el cual mueve físicamente el puntero de la memoria DDRAM al inicio de la segunda fila. |
+
+
+
 ### Diagramas
 
 
