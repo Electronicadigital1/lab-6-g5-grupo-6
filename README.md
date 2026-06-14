@@ -81,6 +81,18 @@ La segunda parte es basicamente lo mismo que la primera, usando la adaptación d
 | **Comparador Lógico** | `if (data_counter == 16)` | **Evaluar la condición** | Circuito que compara constantemente el valor del registro con el límite fijo (`16`). Emite un `0` lógico si aún faltan letras, o un `1` lógico exacto en el momento en que se llena la fila. |
 | **Multiplexor (Enrutador)** | `next_state = ...` | **Ejecutar el salto** | Recibe la señal del comparador. Si recibe un `0`, enruta la FSM para que se mantenga en el mismo estado. Si recibe un `1`, "cambia las vías" y direcciona la FSM hacia su nuevo destino (`IDLE` o `WR_Din_TEXT`). |
 
+### Rutas de Ejecución: Estática (Ruta A) vs. Dinámica (Ruta B)
+
+Una vez que el evaluador confirma que los 16 caracteres de la segunda fila han sido enviados con éxito a la pantalla LCD, el diseño arquitectónico del sistema permite tomar dos caminos diferentes dependiendo del objetivo final del controlador. Esta decisión de enrutamiento define el comportamiento a largo plazo de la máquina de estados:
+
+2. Ruta A: Terminación y Reposo (Módulo Puramente Estático)
+   
+Esta es la ruta seleccionada cuando el sistema solo necesita mostrar un mensaje fijo ("Hardcoded"). Al tomar este camino, la Máquina de Estados (FSM) da por concluida su rutina de inicialización y escritura, retornando a su estado de reposo absoluto (`IDLE`). Debido a que el controlador interno de la pantalla LCD posee su propia memoria de video (DDRAM), el mensaje transmitido queda retenido de forma permanente. La FPGA ya no necesita enviar más datos ni procesar lógica adicional, lo que detiene la actividad del bus y mantiene el texto "congelado" en la pantalla.
+
+3. Ruta B: Bucle de Refresco Continuo (Módulo Dinámico)
+
+Esta ruta se utiliza cuando el sistema actúa como un monitor en tiempo real. En lugar de "descansar", el enrutador empuja a la FSM hacia un nuevo estado cíclico. La máquina adquiere una nueva misión: monitorear ininterrumpidamente las entradas de hardware `data_1` y `data_2`. El sistema entra en un bucle infinito donde reubica estratégicamente el cursor y sobreescribe únicamente las coordenadas específicas de los datos numéricos. Esto ocurre a la velocidad dictada por la base de tiempos (`clk_16ms`), permitiendo que el usuario vea cómo los valores cambian de forma fluida y en tiempo real, sin borrar jamás los títulos fijos previamente escritos en las etapas iniciales.
+
 
 ### Diagramas
 
