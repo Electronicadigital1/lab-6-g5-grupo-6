@@ -94,48 +94,6 @@ Esta ruta se utiliza cuando el sistema actúa como un monitor en tiempo real. En
 
 ### Diagramas
 
-+---------------------------------------+
- +---->|         IDLE (Sala de descanso)       |<------------------------------------+
- |     +---------------------------------------+                                     |
- |                         |                                                         |
- |                         | ¿El jefe da la orden? (ready_i == 1)                    |
- |                         v                                                         |
- |     +---------------------------------------+                                     |
- |     |  CONFIG_CMD1 (Preparar la pizarra)    |---+ ¿Faltan tareas de limpieza?     |
- |     +---------------------------------------+   |                                 |
- |                         |                       +------+                          |
- |                         |                              |                          |
- |                         | ¿Ya terminó de limpiar?      v                          |
- |                         v                           (Repite)                      |
- |     +---------------------------------------+                                     |
- |     | WR_STATIC_TEXT_1L (Escribir Renglón 1)|---+ ¿Faltan letras por escribir?    |
- |     +---------------------------------------+   |                                 |
- |                         |                       +------+                          |
- |                         |                              |                          |
- |                         | ¿Ya escribió 16 letras?      v                          |
- |                         v                           (Repite)                      |
- |     +---------------------------------------+                                     |
- |     |      CONFIG_CMD2 (Bajar la mano)      |                                     |
- |     +---------------------------------------+                                     |
- |                         |                                                         |
- |                         | (Salta automáticamente al renglón de abajo)             |
- |                         v                                                         |
- |     +---------------------------------------+                                     |
- |     | WR_STATIC_TEXT_2L (Escribir Renglón 2)|---+ ¿Faltan letras por escribir?    |
- |     +---------------------------------------+   |                                 |
- |                         |                       +------+                          |
- |                         |                              |                          |
- |                         | ¿Ya escribió 16 letras?      v                          |
- |                         v                           (Repite)                      |
- |                         |                                                         |
- |                         +---[ Si su contrato es ESTÁTICO (Fin de turno) ]---------+
- |                         |
- +-------------------------+---[ Si su contrato es DINÁMICO (Debe seguir trabajando) ]
-                           |
-                           v
-          +-----------------------------------+
-          | WR_Din_TEXT (Actualizar precios)  |
-          +-----------------------------------+
 
 ## Implementación
 
