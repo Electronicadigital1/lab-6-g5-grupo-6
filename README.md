@@ -10,8 +10,8 @@
 
 Indice:
 
-1. [Descripción~
-2. Objetivo
+1. [Descripción](#descripción)
+2. [Objetivo](#objetivos)
 3. [Diseño implementado](#diseño-implementado)
 4. [Simulaciones](#simulaciones)
 5. [Implementación](#implementación)
@@ -31,8 +31,13 @@ En el diseño de sistemas digitales basados en FPGA, la comunicación con perif�
 #### Parte 1 (Estática)
 
 Para la primera parte se utilizaron los recuersos que el profesor del Laboratorio puso a disposición. Con esto lo que se hizo fue inicializar la pantalla LCD 16x2 y escribir un mensaje fijo (que no cambia) de hasta 32 caracteres en total (16 por cada fila) directamente desde la FPGA. Para lograr esto, el módulo ejecuta de manera ordenada y secuencial las siguientes tareas:
-1. Adaptación de la velocidad: a FPGA opera a una frecuencia muy alta (50 MHz), pero la pantalla LCD es un periférico antiguo y lento. El módulo incluye un contador interno que reduce esta velocidad, generando un pulso lento (cada 16 ms) asignado a la señal enable. Esto garantiza que la LCD tenga el tiempo suficiente para procesar cada instrucción.
-$$T = \frac{\text{COUNT\_MAX}}{f_{\text{clk}}} = \frac{800000}{50 \times 10^6 \text{ Hz}} = 0.016 \text{ s} = 16 \text{ ms}$$
+1. Adaptación de la velocidad: La FPGA opera a una frecuencia muy alta (50 MHz), pero la pantalla LCD es un periférico antiguo y lento. El módulo incluye un contador interno que reduce esta velocidad, generando un pulso lento (cada 16 ms) asignado a la señal enable. Esto garantiza que la LCD tenga el tiempo suficiente para procesar cada instrucción.
+   
+T = COUNT_MAX / f_clk
+T = 800,000 / 50,000,000 Hz
+T = 0.016 s = 16 ms
+
+
 ### Diagramas
 
 
