@@ -10,15 +10,29 @@
 
 Indice:
 
-1. [Diseño implementado](#diseño-implementado)
-2. [Simulaciones](#simulaciones)
-3. [Implementación](#implementación)
-4. [Conclusiones](#conclusiones)
-5. [Referencias](#referencias)
+1. [Descripción~
+2. Objetivo
+3. [Diseño implementado](#diseño-implementado)
+4. [Simulaciones](#simulaciones)
+5. [Implementación](#implementación)
+6. [Conclusiones](#conclusiones)
+7. [Referencias](#referencias)
+
+
+## Descripción
+
+En el diseño de sistemas digitales basados en FPGA, la comunicación con periféricos de visualización es un reto que requiere un control preciso de los tiempos y secuencias de datos. El presente informe detalla el diseño y la implementación de un controlador en hardware (usando Verilog) para una pantalla LCD alfanumérica de 16x2. Este informe cuenta con dos partes. La primera parte (estática) tiene como objetivo inicializar la pantalla LCD 16x2 y escribir un mensaje fijo (que no cambia) de hasta 32 caracteres en total (16 por cada fila) directamente desde la FPGA. La segunda parte ( dinámica) se encarga de actualizar y mostrar información que cambia en tiempo real (valores provenientes de las entradas externas data_1 y data_2, que en la práctica podrían ser lecturas de sensores, interruptores o contadores de la FPGA) en posiciones específicas de la pantalla, sin borrar ni alterar el texto estático que se escribió al principio.
+
+## Objetivos
+- Introducir el concepto de máquina de estado en el diseño de hardware utilizando Verilog, enfocado en el control y funcionamiento de una pantalla LCD.
 
 ## Diseño implementado
-### Descripción
 
+#### Parte 1 (Estática)
+
+Para la primera parte se utilizaron los recuersos que el profesor del Laboratorio puso a disposición. Con esto lo que se hizo fue inicializar la pantalla LCD 16x2 y escribir un mensaje fijo (que no cambia) de hasta 32 caracteres en total (16 por cada fila) directamente desde la FPGA. Para lograr esto, el módulo ejecuta de manera ordenada y secuencial las siguientes tareas:
+1. Adaptación de la velocidad: a FPGA opera a una frecuencia muy alta (50 MHz), pero la pantalla LCD es un periférico antiguo y lento. El módulo incluye un contador interno que reduce esta velocidad, generando un pulso lento (cada 16 ms) asignado a la señal enable. Esto garantiza que la LCD tenga el tiempo suficiente para procesar cada instrucción.
+$$T = \frac{\text{COUNT\_MAX}}{f_{\text{clk}}} = \frac{800000}{50 \times 10^6 \text{ Hz}} = 0.016 \text{ s} = 16 \text{ ms}$$
 ### Diagramas
 
 
