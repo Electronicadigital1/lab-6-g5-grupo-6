@@ -93,8 +93,16 @@ Esta ruta se utiliza cuando el sistema actúa como un monitor en tiempo real. En
 
 
 ### Diagramas
+Se realizó el respectivo diagrama de la máquina de estado de la parte estática:
 
+<img width="996" height="505" alt="image" src="https://github.com/user-attachments/assets/0e8ca497-0ef0-459f-b8a0-c9d65b43f623" />
 
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/0e8ca497-0ef0-459f-b8a0-c9d65b43f623" alt="Máquina de Estados Estática" width="600">
+</p>
+<p align="center">
+  <em>Figura 3. Diagrama de bloques parte 2.</em>
+</p>
 ## Implementación
 
 
