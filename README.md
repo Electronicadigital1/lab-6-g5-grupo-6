@@ -37,6 +37,15 @@ T = COUNT_MAX / f_clk
 T = 800,000 / 50,000,000 Hz
 T = 0.016 s = 16 ms
 
+2. Inicialización por Comandos (CONFIG_CMD1): Al recibir la señal de inicio (ready_i), el módulo pone la señal RS en bajo (RS = 0) para indicarle a la LCD que recibirá órdenes de configuración y no texto. Envía secuencialmente 4 comandos predefinidos (como configurar el bus a 8 bits, encender la pantalla, activar el cursor y limpiar la pantalla). En este estado, la FSM prepara la pantalla LCD para poder recibir caracteres. Para indicarle al hardware de la LCD que lo que se va a transmitir es una orden de configuración y no texto, la FSM asigna de manera estricta la señal de registro de selección en bajo (rs <= 1'b0). Simultáneamente, el bus de datos toma el valor guardado en una memoria ROM de configuración interna indexada por el contador: data <= config_mem[command_counter]. En cada ciclo del reloj de 16 ms, el sistema transmite uno de los 4 comandos esenciales:
+
+| Comando | Valor Hexadecimal | Descripción |
+| :--- | :---: | :--- |
+| **Configuración de funciones** | `8'h38` | Define bus de 8 bits y visualización en 2 líneas. |
+| **Modo de entrada** | `8'h06` | Configura el cursor para que se mueva automáticamente a la derecha. |
+| **Control de encendido** | `8'h0c` | Enciende la pantalla y desactiva el parpadeo del cursor. |
+| **Limpieza de pantalla** | `8'h01` | Borra cualquier residuo en la memoria de la LCD. |
+
 
 ### Diagramas
 
