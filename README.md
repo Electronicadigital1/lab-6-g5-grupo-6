@@ -66,6 +66,20 @@ En estos estados, la Máquina de Estados (FSM) se encarga de leer los caracteres
 | **Cambio a modo comando** | `rs <= 1'b0;` | Regresa la línea de selección de registro a bajo, indicándole a la LCD que recibirá una instrucción de control y no un carácter de texto. |
 | **Instrucción de salto** | `data <= 8'hc0;` | Deposita en el bus el comando `START_2LINE`, el cual mueve físicamente el puntero de la memoria DDRAM al inicio de la segunda fila. |
 
+5. Escritura de la Segunda Fila: La FSM vuelve a conmutar la señal a modo datos (rs <= 1'b1) para habilitar nuevamente la impresión de caracteres ASCII. Dado que el mensaje de la segunda línea se encuentra guardado en la misma memoria ROM justo después del texto de la primera línea (posiciones de la 16 a la 31), el hardware altera el direccionamiento aplicando un desfase aritmético: data <= static_data_mem[NUM_DATA_PERLINE + data_counter]. Las letras se imprimen secuencialmente en la fila inferior de la LCD. El data_counter vuelve a incrementarse desde 0 hasta 15. Mientras esto ocurre, el estado se mantiene retenido en WR_STATIC_TEXT_2L. En el instante en que el contador registra el carácter número 16 (data_counter == 16), la transferencia del bloque estático se da por concluida de manera exitosa. En este punto, la máquina de estados realiza su acción final volviendo al estado IDLE, dejando el mensaje "enganchado" (latched) visualmente en la pantalla gracias a la memoria RAM propia del periférico.
+
+
+#### Parte 2 (Dinámica) 
+
+La segunda parte es basicamente lo mismo que la primera, usando la adaptación de la velocidad, la inicialización de comandos, la escritura de la primera fila, el salto de línea y la escritura de la segunda fila, sin embargo se le agregó tres cosas muy importantes:
+1. Evaluador: Es el responsable de gestionar la condición de salida al finalizar la escritura de la segunda línea de texto. A nivel de arquitectura modular, este bloque se compone de tres elementos digitales interconectados: un registro contador (`data_counter`) que incrementa su valor con cada carácter enviado a la pantalla, un circuito comparador lógico que verifica constantemente si se ha alcanzado la capacidad máxima de la fila (`data_counter == 16`), y un multiplexor encargado del enrutamiento de la Máquina de Estados (FSM). Mientras el límite de caracteres no se alcance, el sistema se mantiene iterando en el mismo estado de escritura. Sin embargo, en el instante exacto en que el comparador detecta que la fila está completamente llena, emite una señal de control activa. Esta señal obliga al sistema a realizar un "cambio de vías" síncrono en el siguiente flanco de reloj, redirigiendo el flujo de ejecución hacia el reposo absoluto (`IDLE`) en la versión estática, o hacia el bucle infinito de refresco de variables (`WR_Din_TEXT`) en la versión dinámica.
+   
+
+| Componente Físico | Elemento en el Código | Función Principal | Comportamiento en el Sistema |
+| :--- | :--- | :--- | :--- |
+| **Registro (Memoria)** | `data_counter` | **Llevar el conteo** | Grupo de flip-flops que almacena el número de caracteres enviados. Se incrementa en `1` con cada pulso de reloj síncrono. |
+| **Comparador Lógico** | `if (data_counter == 16)` | **Evaluar la condición** | Circuito que compara constantemente el valor del registro con el límite fijo (`16`). Emite un `0` lógico si aún faltan letras, o un `1` lógico exacto en el momento en que se llena la fila. |
+| **Multiplexor (Enrutador)** | `next_state = ...` | **Ejecutar el salto** | Recibe la señal del comparador. Si recibe un `0`, enruta la FSM para que se mantenga en el mismo estado. Si recibe un `1`, "cambia las vías" y direcciona la FSM hacia su nuevo destino (`IDLE` o `WR_Din_TEXT`). |
 
 
 ### Diagramas
