@@ -151,6 +151,51 @@ También se realizó el diagrama de la máquina de estados dinámica:
 En esta parte, se implementó el código proporcionado por el docente para analizar el resultado de un LCD Estático, el cual fue el siguiente:
 
 
+## LCD Dinámico
+
+En esta parte se ajustó la entrada dinámica según los switches, donde los 4 primeros switches será el número que aparece en la primera fila y los otros 4 los de la segunda fila (Mirando la FPGA de frente) Se probó diferentes valores de entrada, comprobando su concordancia en la pantalla.
+
+Se concatenó el 0011 al inicio para convertir el valor de los bits de entrada en su equivalente en código ASCII para que la LCD lo interprete correctamente.
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/100141ba-6d94-4f27-9664-fe91c6b4340a" alt="PruebaD1" width="600">
+</p>
+<p align="center">
+  <em>Figura . Entrada 0000 - 0000 </em>
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/5c2ecfc8-4613-4b16-8891-9e18f2b9df49" alt="Prueba D2" width="600">
+</p>
+<p align="center">
+  <em>Figura . Entrada 0001 - 0011 </em>
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/03c87c59-e770-4103-bd18-058f7c9c7abc" alt="Prueba D3" width="600">
+</p>
+<p align="center">
+  <em>Figura . Entrada 0011 - 0100 </em>
+</p>
+
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/ea6a4bf7-37d7-4e5c-886d-a09db8433d07" alt="Prueba D4" width="600">
+</p>
+<p align="center">
+  <em>Figura . Entrada 0110 - 0111 </em>
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/7fcc6abd-47d0-4ab7-ad4b-e6b71ea84cff" alt="Prueba D5" width="600">
+</p>
+<p align="center">
+  <em>Figura . Entrada 1111 - 1110 </em>
+</p>
+
+En este último caso, aparece el signo correspondiente al valor 00111110 del codigo ASCII, el cual es el signo >, de igual manera para el signo ¨?¨.
+
+Se comprueba así el correcto funcionamiento del código en la LCD de la FPGA.
 
 
 ## Conclusiones
