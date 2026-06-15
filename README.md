@@ -108,11 +108,17 @@ También se realizó el diagrama de la máquina de estados dinámica:
   <img src="https://github.com/user-attachments/assets/3c92131c-52e3-451e-888c-17c3a17f974a" alt="Máquina de Estados Dinámica" width="600">
 </p>
 <p align="center">
-  <em>Figura 3. Máquina de Estados Dinámica.</em>
+  <em>Figura 4. Máquina de Estados Dinámica.</em>
 </p>
 
 
 ## Implementación
+
+### LCD Estático
+
+En esta parte, se implementó el código proporcionado por el docente para analizar el resultado de un LCD Estático, el cual fue el siguiente:
+
+
 
 
 ## Conclusiones
