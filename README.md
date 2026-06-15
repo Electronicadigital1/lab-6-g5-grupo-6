@@ -26,6 +26,38 @@ En el diseño de sistemas digitales basados en FPGA, la comunicación con perif�
 ## Objetivos
 - Introducir el concepto de máquina de estado en el diseño de hardware utilizando Verilog, enfocado en el control y funcionamiento de una pantalla LCD.
 
+## Marco teórico
+
+La pantalla LCD (Liquid Crystal Display) de 16*2 permite mostrar simbolos alfanumericos de manera simple y bajos recursos. Para implementarlo, se debe ejecutar una secuencia específica de comandos. Se hace el uso de una FSM para gestionar de manera estructurada el flujo de datos.
+
+Características de la LCD:
+La LCD utilizada en este laboratorio es de 16 columnas y 2 filas, mostrando 32 carácteres en total que se construye en una matriz de 5*8 píxeles, el voltaje de operación es de 4.7 V a 5.3 V y una corriente de consumo de 1mA. La LCD tiene 16 pines de alimentación, control y transferencia de datos, donde cada uno tiene una función específica.
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/e4ecc80c-2c27-4e3a-8035-cc6e0528de98" alt="Máquina de Estados Estática" width="600">
+</p>
+<p align="center">
+  <em>Figura 1. Pantalla LCD</em>
+</p>
+
+- Vss = GND (Tierra)
+- Vdd = (+3.3V a +5V) – Alimentación de la pantalla
+- Vo = Ajuste de contraste
+- RS = Selección de tipo de registro – RS=0: Comando, RS=1: Dato
+- R/W = Lectura/Escritura – R/W=0: Escritura, R/W=1: Lectura
+- E = Clock (Enable) – Activado en el flanco de bajada
+- D0 = Bit 0 – Línea de datos
+- D1 = Bit 1 – Línea de datos
+- D2 = Bit 2 – Línea de datos
+- D3 = Bit 3 – Línea de datos
+- D4 = Bit 4 – Línea de datos
+- D5 = Bit 5 – Línea de datos
+- D6 = Bit 6 – Línea de datos
+- D7 = Bit 7 – Línea de datos
+- A = Ánodo de retroiluminación (+)
+- K = Cátodo de retroiluminación (-)
+
+
 ## Diseño implementado
 
 #### Parte 1 (Estática)
